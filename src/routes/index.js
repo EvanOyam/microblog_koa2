@@ -16,4 +16,10 @@ router.get('/json', async (ctx, next) => {
   }
 })
 
+// todo 测试代码
+router.get('/test/:id', async (ctx, next) => {
+  const { id } = ctx.params
+  ctx.body = id
+})
+
 module.exports = router
