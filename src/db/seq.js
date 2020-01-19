@@ -1,0 +1,22 @@
+const Sequelize = require('sequelize')
+const { MYSQL_CONF } = require('../conf/db')
+const { host, user, password, database } = MYSQL_CONF
+const { isProd } = require('../utils/env')
+
+const conf = {
+  host,
+  dialect: 'mysql'
+}
+
+// 生产环境使用连接池
+if (isProd) {
+  conf.pool = {
+    max: 5,
+    min: 0,
+    idle: 1000
+  }
+}
+
+const seq = new Sequelize(database, user, password, conf)
+
+module.exports = seq
