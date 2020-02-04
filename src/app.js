@@ -5,24 +5,30 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-
 const index = require('./routes/index')
 const users = require('./routes/users')
+const session = require('koa-generic-session')
+const redisStore = require('koa-redis')
+const { REDIS_CONF } = require('./conf/db')
 
 // error handler
 onerror(app)
 
 // middlewares
-app.use(bodyparser({
-  enableTypes:['json', 'form', 'text']
-}))
+app.use(
+  bodyparser({
+    enableTypes: ['json', 'form', 'text']
+  })
+)
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 
-app.use(views(__dirname + '/views', {
-  extension: 'ejs'
-}))
+app.use(
+  views(__dirname + '/views', {
+    extension: 'ejs'
+  })
+)
 
 // logger
 app.use(async (ctx, next) => {
@@ -32,6 +38,23 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
+// session配置
+app.keys = ['testKey'] // 用于加密cookie
+app.use(
+  session({
+    key: 'weibo.sid', // cookie名称
+    prefix: 'weibo:sess:', // 日志前缀
+    cookie: {
+      path: '/',
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 3600 // 单位ms
+    },
+    store: redisStore({
+      all: `${REDIS_CONF.host}:${REDIS_CONF.port}`
+    })
+  })
+)
+
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
@@ -39,6 +62,6 @@ app.use(users.routes(), users.allowedMethods())
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
-});
+})
 
 module.exports = app

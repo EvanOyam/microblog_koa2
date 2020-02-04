@@ -1,11 +1,16 @@
 const Sequelize = require('sequelize')
 const { MYSQL_CONF } = require('../conf/db')
 const { host, user, password, database } = MYSQL_CONF
-const { isProd } = require('../utils/env')
+const { isProd, isTest } = require('../utils/env')
 
 const conf = {
   host,
   dialect: 'mysql'
+}
+
+// 跑单元测试时不输出sequelize日志，置空函数
+if (isTest) {
+  conf.logging = () => {}
 }
 
 // 生产环境使用连接池
@@ -18,5 +23,15 @@ if (isProd) {
 }
 
 const seq = new Sequelize(database, user, password, conf)
+
+// 连接测试
+// seq
+//   .authenticate()
+//   .then(() => {
+//     console.log('ok')
+//   })
+//   .catch(err => {
+//     console.log(err)
+//   })
 
 module.exports = seq
