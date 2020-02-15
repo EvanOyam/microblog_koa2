@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-02-12 16:37:02
  * @Last Modified by: Evan
- * @Last Modified time: 2020-02-12 16:49:03
+ * @Last Modified time: 2020-02-15 22:35:32
  * @Description: 格式化结构，添加默认数据
  */
 
@@ -31,7 +31,7 @@ function formatUser(list) {
   if (Array.isArray(list)) {
     return list.map(_formatUserPicture)
   }
-  return list.map(_formatUserPicture)
+  return _formatUserPicture(list)
 }
 
 module.exports = {
