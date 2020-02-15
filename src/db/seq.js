@@ -24,14 +24,4 @@ if (isProd) {
 
 const seq = new Sequelize(database, user, password, conf)
 
-// 连接测试
-// seq
-//   .authenticate()
-//   .then(() => {
-//     console.log('ok')
-//   })
-//   .catch(err => {
-//     console.log(err)
-//   })
-
 module.exports = seq

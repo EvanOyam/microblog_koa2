@@ -2,10 +2,11 @@
  * @Author: Evan
  * @Date: 2020-02-03 21:54:58
  * @Last Modified by: Evan
- * @Last Modified time: 2020-02-03 21:55:34
+ * @Last Modified time: 2020-02-07 02:27:03
  * @Description: sequelize 同步
  */
 const seq = require('./seq')
+require('./model/index')
 
 // 连接测试
 seq
