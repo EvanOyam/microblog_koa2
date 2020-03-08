@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-02-10 22:02:28
  * @Last Modified by: Evan
- * @Last Modified time: 2020-02-16 00:01:07
+ * @Last Modified time: 2020-02-28 17:51:08
  * @Description: 用户表相关操作
  */
 
@@ -55,7 +55,17 @@ async function createUser({
   return result.dataValues
 }
 
+async function deleteUser(userName) {
+  const result = await User.destroy({
+    where: {
+      userName
+    }
+  })
+  return result > 0
+}
+
 module.exports = {
   getUserInfo,
-  createUser
+  createUser,
+  deleteUser
 }

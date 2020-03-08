@@ -2,17 +2,18 @@
  * @Author: Evan
  * @Date: 2020-02-10 21:56:53
  * @Last Modified by: Evan
- * @Last Modified time: 2020-02-27 17:27:23
+ * @Last Modified time: 2020-03-08 16:46:07
  * @Description: 登陆注册业务逻辑
  */
 
-const { getUserInfo, createUser } = require('../services/user')
+const { getUserInfo, createUser, deleteUser } = require('../services/user')
 const { SuccessModel, ErrorModel } = require('../model/ResModel')
 const {
   userNameExist,
   registerUserNameExistInfo,
   registerFailInfo,
-  loginFailInfo
+  loginFailInfo,
+  deleteUserFailInfo
 } = require('../model/ErrorInfo')
 const doCrypto = require('../utils/cryp')
 
@@ -31,15 +32,15 @@ async function isExist(userName) {
 
 /**
  * 注册逻辑
- * @param {*} userName 用户名
- * @param {*} password 密码
- * @param {*} gender 性别
+ * @param {Object} userName 用户名
+ * @param {String} password 密码
+ * @param {String} gender 性别
  */
 async function register({ userName, password, gender }) {
   const userInfo = await getUserInfo(userName)
   if (userInfo) {
     // 用户名已存在
-    return ErrorModel(registerUserNameExistInfo)
+    return new ErrorModel(registerUserNameExistInfo)
   }
   try {
     await createUser({
@@ -54,6 +55,12 @@ async function register({ userName, password, gender }) {
   }
 }
 
+/**
+ * 登录逻辑
+ * @param {Object} ctx 上下文
+ * @param {String} userName 用户名
+ * @param {String} password 密码
+ */
 async function login(ctx, userName, password) {
   const userInfo = await getUserInfo(userName, doCrypto(password))
   if (!userInfo) {
@@ -67,8 +74,21 @@ async function login(ctx, userName, password) {
   return new SuccessModel()
 }
 
+/**
+ * 删除用户
+ * @param {String} userName 用户名
+ */
+async function deleteTestUser(userName) {
+  const result = await deleteUser(userName)
+  if (result) {
+    return new SuccessModel()
+  }
+  return new ErrorModel(deleteUserFailInfo)
+}
+
 module.exports = {
   isExist,
   register,
-  login
+  login,
+  deleteTestUser
 }
