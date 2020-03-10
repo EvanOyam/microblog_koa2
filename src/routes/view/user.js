@@ -2,11 +2,12 @@
  * @Author: Evan
  * @Date: 2020-02-06 19:22:03
  * @Last Modified by: Evan
- * @Last Modified time: 2020-02-28 10:39:02
+ * @Last Modified time: 2020-03-10 11:11:32
  * @Description: 登陆 / 注册页面
  */
 
 const router = require('koa-router')()
+const { loginRedirect } = require('../../middlewares/loginCheck')
 
 /**
  * 获取登录信息
@@ -31,6 +32,10 @@ router.get('/login', async ctx => {
 
 router.get('/register', async ctx => {
   await ctx.render('register', getLoginInfo(ctx))
+})
+
+router.get('/setting', loginRedirect, async ctx => {
+  await ctx.render('setting', ctx.session.userInfo)
 })
 
 module.exports = router

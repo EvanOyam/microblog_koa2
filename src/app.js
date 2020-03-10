@@ -10,12 +10,15 @@ const redisStore = require('koa-redis')
 const { REDIS_CONF } = require('./conf/db')
 const { SESSION_SECRET_KEY } = require('./conf/secretKeys')
 const { isProd } = require('./utils/env')
+const koaStatic = require('koa-static')
+const path = require('path')
 
 // 路由
 const index = require('./routes/index')
 const userViewRouter = require('./routes/view/user')
 const userAPIRouter = require('./routes/api/user')
 const errorViewRouter = require('./routes/view/error')
+const utilsAPIRouter = require('./routes/api/utils')
 
 // error handler, 捕获到错误时重定向去错误页
 let onerrorConf = {}
@@ -34,7 +37,8 @@ app.use(
 )
 app.use(json())
 app.use(logger())
-app.use(require('koa-static')(__dirname + '/public'))
+app.use(koaStatic(__dirname + '/public'))
+app.use(koaStatic(path.join(__dirname, '../uploadFiles')))
 
 app.use(
   views(__dirname + '/views', {
@@ -71,6 +75,7 @@ app.use(
 app.use(index.routes(), index.allowedMethods())
 app.use(userViewRouter.routes(), userViewRouter.allowedMethods())
 app.use(userAPIRouter.routes(), userAPIRouter.allowedMethods())
+app.use(utilsAPIRouter.routes(), utilsAPIRouter.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods())
 
 // error-handling
