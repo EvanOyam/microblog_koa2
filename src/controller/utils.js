@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-03-10 14:03:16
  * @Last Modified by: Evan
- * @Last Modified time: 2020-03-10 16:29:42
+ * @Last Modified time: 2020-03-10 16:37:34
  * @Description: utils 业务逻辑
  */
 
@@ -31,7 +31,7 @@ fse.pathExists(DIST_FOLDER_PATH).then(exist => {
  * @param {Number} size 文件体积大小
  * @param {String} filePath 文件路径
  */
-async function saveFile({ name, type, size, filePath }) {
+async function saveFile({ name, size, filePath }) {
   if (size > MAX_SIZE) {
     await fse.remove(filePath)
     return new ErrorModel(uploadFileSizeFailInfo)
