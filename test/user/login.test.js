@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-03-08 16:35:52
  * @Last Modified by: Evan
- * @Last Modified time: 2020-03-08 17:15:26
+ * @Last Modified time: 2020-03-11 17:46:47
  * @Description: 登录测试用例
  */
 
@@ -62,6 +62,24 @@ test('登录，应该成功', async () => {
   COOKIE = res.headers['set-cookie'].join(';')
 })
 
+// 修改基本信息
+test('修改用户信息', async () => {
+  const res = await server
+    .patch('/api/user/changeInfo')
+    .send({ nickName: 'test', city: '深圳', picture: '/img01.jpg' })
+    .set('cookie', COOKIE)
+  expect(res.body.errno).toBe(0)
+})
+
+// 修改密码
+test('修改密码', async () => {
+  const res = await server
+    .patch('/api/user/changePassword')
+    .send({ password, newPassword: `p_${Date.now()}` })
+    .set('cookie', COOKIE)
+  expect(res.body.errno).toBe(0)
+})
+
 // 删除
 test('删除用户，应该成功', async () => {
   const res = await server.post('/api/user/delete').set('cookie', COOKIE)
@@ -72,4 +90,10 @@ test('删除用户，应该成功', async () => {
 test('删除之后，再次查询注册的用户名，应该不存在', async () => {
   const res = await server.post('/api/user/isExist').send({ userName })
   expect(res.body.errno).not.toBe(0)
+})
+
+// 退出登录
+test('退出登录', async () => {
+  const res = await server.post('/api/user/logout').set('cookie', COOKIE)
+  expect(res.body.errno).toBe(0)
 })
