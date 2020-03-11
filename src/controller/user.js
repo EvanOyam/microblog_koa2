@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-02-10 21:56:53
  * @Last Modified by: Evan
- * @Last Modified time: 2020-03-11 17:14:57
+ * @Last Modified time: 2020-03-11 17:27:01
  * @Description: 登陆注册业务逻辑
  */
 
@@ -128,7 +128,7 @@ async function changeInfo(ctx, { nickName, city, picture }) {
 }
 
 /**
- *
+ * 修改密码
  * @param {Object} ctx 上下文
  * @param {Object} param1 需要修改的密码
  */
@@ -147,11 +147,21 @@ async function changePassword(ctx, { password, newPassword }) {
   return new ErrorModel(changePasswordFailInfo)
 }
 
+/**
+ * 退出登录
+ * @param {Object} ctx 上下文
+ */
+async function logout(ctx) {
+  delete ctx.session.userInfo
+  return new SuccessModel()
+}
+
 module.exports = {
   isExist,
   register,
   login,
   deleteTestUser,
   changeInfo,
-  changePassword
+  changePassword,
+  logout
 }

@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-02-10 21:39:08
  * @Last Modified by: Evan
- * @Last Modified time: 2020-03-11 17:07:38
+ * @Last Modified time: 2020-03-11 17:26:00
  * @Description: 用户注册路由
  */
 
@@ -13,7 +13,8 @@ const {
   login,
   deleteTestUser,
   changeInfo,
-  changePassword
+  changePassword,
+  logout
 } = require('../../controller/user')
 const { isTest } = require('../../utils/env')
 // 用户信息校验相关中间件
@@ -67,5 +68,10 @@ router.patch(
     ctx.body = await changePassword(ctx, { password, newPassword })
   }
 )
+
+// 退出登录
+router.post('/logout', loginCheck, async ctx => {
+  ctx.body = await logout(ctx)
+})
 
 module.exports = router
