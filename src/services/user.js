@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-02-10 22:02:28
  * @Last Modified by: Evan
- * @Last Modified time: 2020-02-28 17:51:08
+ * @Last Modified time: 2020-03-11 16:07:00
  * @Description: 用户表相关操作
  */
 
@@ -64,8 +64,48 @@ async function deleteUser(userName) {
   return result > 0
 }
 
+/**
+ *
+ * @param {Object} param0 需要修改的信息
+ * @param {Object} param1 查询条件
+ */
+async function updateUser(
+  { newPassword, newNickName, newPicture, newCity },
+  { userName, password }
+) {
+  // 拼接修改内容
+  let updateData = {}
+  if (newPassword) {
+    updateData.password = newPassword
+  }
+  if (newNickName) {
+    updateData.nickName = newNickName
+  }
+  if (newPicture) {
+    updateData.picture = newPicture
+  }
+  if (newCity) {
+    updateData.city = newCity
+  }
+
+  // 拼接查询条件
+  let whereData = {
+    userName
+  }
+  if (password) {
+    whereData.password = password
+  }
+
+  // 执行修改
+  const result = await User.update(updateData, {
+    where: whereData
+  })
+  return result[0] > 0 // 修改的行数
+}
+
 module.exports = {
   getUserInfo,
   createUser,
-  deleteUser
+  deleteUser,
+  updateUser
 }
