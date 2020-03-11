@@ -2,7 +2,7 @@
  * @Author: Evan
  * @Date: 2020-02-10 21:56:53
  * @Last Modified by: Evan
- * @Last Modified time: 2020-03-11 16:00:21
+ * @Last Modified time: 2020-03-11 17:14:57
  * @Description: 登陆注册业务逻辑
  */
 
@@ -19,7 +19,8 @@ const {
   registerFailInfo,
   loginFailInfo,
   deleteUserFailInfo,
-  changeInfoFailInfo
+  changeInfoFailInfo,
+  changePasswordFailInfo
 } = require('../model/ErrorInfo')
 const doCrypto = require('../utils/cryp')
 
@@ -113,11 +114,12 @@ async function changeInfo(ctx, { nickName, city, picture }) {
   )
   if (result) {
     // 执行成功
-    Object.assign(ctx.session.userInfo, {
+    ctx.session.userInfo = {
+      ...ctx.session.userInfo,
       nickName,
       city,
       picture
-    })
+    }
     // 返回
     return new SuccessModel()
   }
@@ -125,10 +127,31 @@ async function changeInfo(ctx, { nickName, city, picture }) {
   return new ErrorModel(changeInfoFailInfo)
 }
 
+/**
+ *
+ * @param {Object} ctx 上下文
+ * @param {Object} param1 需要修改的密码
+ */
+async function changePassword(ctx, { password, newPassword }) {
+  const { userName } = ctx.session.userInfo
+  const result = await updateUser(
+    { newPassword: doCrypto(newPassword) },
+    { userName, password: doCrypto(password) }
+  )
+
+  if (result) {
+    // 返回
+    return new SuccessModel()
+  }
+  // 失败
+  return new ErrorModel(changePasswordFailInfo)
+}
+
 module.exports = {
   isExist,
   register,
   login,
   deleteTestUser,
-  changeInfo
+  changeInfo,
+  changePassword
 }
